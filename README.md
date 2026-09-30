@@ -1,75 +1,72 @@
-# React + TypeScript + Vite
+# User Directory (CRUD)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple React + TypeScript + Vite CRUD app for managing users.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React
+- TypeScript
+- Vite
+- Axios
+- Formik
 
-## React Compiler
+## Run Locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Install dependencies:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+2. Add environment file:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```env
+VITE_API_URL=http://localhost:3000
 ```
+
+3. Start dev server:
+
+```bash
+npm run dev
+```
+
+## Common API Setup
+
+We created a shared API file so base URL is configured once and reused globally.
+
+- Common file: [src/common/api.ts](src/common/api.ts)
+- Service usage: [src/services/userService.ts](src/services/userService.ts)
+
+Current shared API config:
+
+```ts
+import axios from "axios";
+
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+```
+
+## Form Handling with Formik
+
+We switched user form handling to Formik.
+
+- Form component: [src/components/UserForm.tsx](src/components/UserForm.tsx)
+- Uses:
+  - `useFormik()`
+  - `initialValues`
+  - `formik.handleChange`
+  - `formik.handleSubmit`
+
+## What We Completed Today
+
+1. Discussed and implemented Formik usage in the user form.
+2. Added/used a common API file to avoid repeating base URL setup.
+3. Standardized API base URL to come from `.env` using `VITE_API_URL`.
+4. Updated guidance for cleaner project structure (`common` usage).
+5. Clarified `baseURL` is an Axios option and not a global built-in.
+
+## Notes
+
+- Keep all API calls through [src/common/api.ts](src/common/api.ts).
+- Prefer importing `api` in service files instead of direct `axios` usage.
